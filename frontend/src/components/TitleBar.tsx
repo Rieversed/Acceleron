@@ -45,6 +45,7 @@ const TitleBar: React.FC = () => {
 
   return (
     <div className="titlebar">
+<<<<<<< HEAD
       <div className="titlebar-spacer"></div>
       <div className="titlebar-title">Acceleron</div>
       <div className="titlebar-controls">
@@ -52,6 +53,15 @@ const TitleBar: React.FC = () => {
         <div className="titlebar-button maximize" onClick={handleToggleMaximize}></div>
         <div className="titlebar-button close" onClick={handleClose}></div>
       </div>
+=======
+      <div className="titlebar-controls">
+        <div className="titlebar-button close" onClick={handleClose}></div>
+        <div className="titlebar-button minimize" onClick={handleMinimize}></div>
+        <div className="titlebar-button maximize" onClick={handleToggleMaximize}></div>
+      </div>
+      <div className="titlebar-title">Acceleron</div>
+      <div className="titlebar-spacer"></div>
+>>>>>>> 200c63f (Remove files that should be ignored)
     </div>
   );
 };

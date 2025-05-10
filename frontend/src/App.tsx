@@ -410,11 +410,16 @@ const AppContent: React.FC = () => {
         </main>
         
         <footer className="app-footer">
+<<<<<<< HEAD
           <div className="disclaimer-box">
             <h3>DISCLAIMER</h3>
             <p>By using this software, you acknowledge that any changes made to your system are at your own risk. The developers of Acceleron are not liable for any damages or issues that may arise from the use of this application.</p>
           </div>
           <p>&copy; {new Date().getFullYear()} Acceleron. All rights reserved.</p>
+=======
+          <p>&copy; {new Date().getFullYear()} Acceleron. All rights reserved.</p>
+          <p className="disclaimer">By using this software, you acknowledge that any changes made to your system are at your own risk.</p>
+>>>>>>> 200c63f (Remove files that should be ignored)
         </footer>
       </div>
     </div>
