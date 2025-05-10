@@ -248,10 +248,25 @@ const AppContent: React.FC = () => {
     
     setIsOptimizing(true);
     
-    // Simulate API call
     try {
-      // In a real app, this would be an API call to the backend
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Make actual API call to the backend
+      const response = await fetch('http://localhost:8000/optimize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          appId: selectedApp.id,
+          scripts: selectedScripts,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Optimization result:', data);
       setOptimizationComplete(true);
     } catch (error) {
       console.error('Optimization failed:', error);
@@ -395,8 +410,11 @@ const AppContent: React.FC = () => {
         </main>
         
         <footer className="app-footer">
+          <div className="disclaimer-box">
+            <h3>DISCLAIMER</h3>
+            <p>By using this software, you acknowledge that any changes made to your system are at your own risk. The developers of Acceleron are not liable for any damages or issues that may arise from the use of this application.</p>
+          </div>
           <p>&copy; {new Date().getFullYear()} Acceleron. All rights reserved.</p>
-          <p className="disclaimer">By using this software, you acknowledge that any changes made to your system are at your own risk.</p>
         </footer>
       </div>
     </div>

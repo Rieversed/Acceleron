@@ -5,9 +5,13 @@ echo ===================================================
 echo.
 echo This script will build Acceleron and create installer files.
 echo.
-echo DISCLAIMER: By using this software, you acknowledge that 
-echo any changes made to your system are at your own risk.
-echo.
+echo ===================================================
+echo                  DISCLAIMER
+echo ===================================================
+echo By using this software, you acknowledge that any changes
+echo made to your system are at your own risk. The developers
+echo of Acceleron are not liable for any damages or issues
+echo that may arise from the use of this application.
 echo ===================================================
 echo.
 
@@ -101,8 +105,12 @@ echo - Acceleron_Installer.msi (Windows Installer)
 echo - Acceleron_Setup.exe (Executable Installer)
 echo.
 echo ===================================================
-echo DISCLAIMER: By using this software, you acknowledge that 
-echo any changes made to your system are at your own risk.
+echo                  DISCLAIMER
+echo ===================================================
+echo By using this software, you acknowledge that any changes
+echo made to your system are at your own risk. The developers
+echo of Acceleron are not liable for any damages or issues
+echo that may arise from the use of this application.
 echo ===================================================
 echo.
 

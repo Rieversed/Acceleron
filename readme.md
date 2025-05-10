@@ -2,7 +2,17 @@
 
 Acceleron is a powerful desktop application built with Tauri, React, TypeScript, and Deno that helps optimize and debloat other applications by applying specialized scripts to improve their performance, reduce resource usage, and enhance privacy.
 
-![Acceleron App](https://i.imgur.com/placeholder.png) <!-- Replace with actual screenshot when available -->
+<p align="center">
+  <img src="frontend/src-tauri/icons/icon.svg" alt="Acceleron Logo" width="120" />
+</p>
+
+## ✨ New UI Features
+
+- **Modern Interface**: Clean, intuitive design with smooth animations
+- **Custom Title Bar**: macOS-style traffic light controls for window management
+- **Dark/Light Mode**: Smooth transition between themes with animated toggle
+- **Responsive Layout**: Adapts perfectly to different screen sizes
+- **Hidden Scrollbars**: Clean UI with functional but visually minimal scrollbars
 
 ## Features
 
@@ -96,12 +106,42 @@ Acceleron/
 
 ## Building for Production
 
+### Using the Build Script
+
+For convenience, a build script is included that automates the entire build process:
+
+```batch
+.\build-acceleron.bat
+```
+
+This script will:
+1. Check for the correct directory structure
+2. Install all necessary dependencies
+3. Build the Tauri application
+4. Create installer files (MSI, EXE)
+5. Copy the installers to an output directory
+
+### Manual Build Process
+
+If you prefer to build manually:
+
 ```bash
 cd frontend
+npm install
 npm run tauri:build
 ```
 
-This will create executable binaries in the `frontend/src-tauri/target/release` directory.
+This will create executable binaries and installers in the `frontend/src-tauri/target/release` directory.
+
+### Running the Application
+
+Use the included startup script to properly launch all components:
+
+```batch
+.\start-acceleron.bat
+```
+
+This script handles starting both the backend server and the frontend application, and ensures proper process cleanup when closing.
 
 ## Development Notes
 

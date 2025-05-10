@@ -48,9 +48,10 @@
 .theme-toggle-label:after {
   content: '☀️';
   position: absolute;
-  top: 5px;
+  top: 50%;
   left: 7px;
   font-size: 14px;
+  transform: translateY(-50%);
   transition: var(--transition-normal);
   opacity: 1;
 }
@@ -66,7 +67,7 @@
 .theme-toggle-label, 
 .theme-toggle-label:before,
 .theme-toggle-label:after {
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Hover effect */
