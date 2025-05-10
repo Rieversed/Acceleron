@@ -1,0 +1,80 @@
+.theme-toggle {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+}
+
+.theme-toggle-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.theme-toggle-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f0f0f0;
+  border-radius: 30px;
+  transition: var(--transition-normal);
+}
+
+.theme-toggle-label:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: var(--transition-normal);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label {
+  background-color: var(--primary);
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label:before {
+  transform: translateX(30px);
+}
+
+/* Sun and moon icons */
+.theme-toggle-label:after {
+  content: '☀️';
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  font-size: 14px;
+  transition: var(--transition-normal);
+  opacity: 1;
+}
+
+.theme-toggle-checkbox:checked + .theme-toggle-label:after {
+  content: '🌙';
+  left: auto;
+  right: 7px;
+  opacity: 1;
+}
+
+/* Animation */
+.theme-toggle-label, 
+.theme-toggle-label:before,
+.theme-toggle-label:after {
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* Hover effect */
+.theme-toggle-label:hover {
+  box-shadow: 0 0 5px var(--primary-light);
+}
+
+/* Focus styles for accessibility */
+.theme-toggle-checkbox:focus + .theme-toggle-label {
+  box-shadow: 0 0 0 2px var(--primary-light);
+}

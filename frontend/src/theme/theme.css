@@ -1,0 +1,92 @@
+:root {
+  /* Light Theme Colors */
+  --light-primary: #6c63ff;
+  --light-primary-light: #8a84ff;
+  --light-primary-dark: #4641ff;
+  --light-secondary: #f50057;
+  --light-accent: #4cc9f0;
+  --light-success: #4caf50;
+  --light-warning: #ff9800;
+  --light-error: #f44336;
+  --light-background: #f5f5f5;
+  --light-card-bg: #ffffff;
+  --light-text: #333333;
+  --light-text-light: #777777;
+  --light-text-lighter: #999999;
+  --light-border: #e0e0e0;
+  
+  /* Dark Theme Colors */
+  --dark-primary: #6c63ff;
+  --dark-primary-light: #8a84ff;
+  --dark-primary-dark: #4641ff;
+  --dark-secondary: #f50057;
+  --dark-accent: #7209b7;
+  --dark-success: #4caf50;
+  --dark-warning: #ff9800;
+  --dark-error: #f44336;
+  --dark-background: #121212;
+  --dark-card-bg: #1e1e1e;
+  --dark-surface: #2d2d2d;
+  --dark-text: #e0e0e0;
+  --dark-text-light: #b0b0b0;
+  --dark-text-lighter: #808080;
+  --dark-border: #333333;
+  
+  /* Common Variables */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+  
+  /* Default Theme (Light) */
+  --primary: var(--light-primary);
+  --primary-light: var(--light-primary-light);
+  --primary-dark: var(--light-primary-dark);
+  --secondary: var(--light-secondary);
+  --accent: var(--light-accent);
+  --success: var(--light-success);
+  --warning: var(--light-warning);
+  --error: var(--light-error);
+  --background: var(--light-background);
+  --card-bg: var(--light-card-bg);
+  --text: var(--light-text);
+  --text-light: var(--light-text-light);
+  --text-lighter: var(--light-text-lighter);
+  --border: var(--light-border);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary: var(--dark-primary);
+  --primary-light: var(--dark-primary-light);
+  --primary-dark: var(--dark-primary-dark);
+  --secondary: var(--dark-secondary);
+  --accent: var(--dark-accent);
+  --success: var(--dark-success);
+  --warning: var(--dark-warning);
+  --error: var(--dark-error);
+  --background: var(--dark-background);
+  --card-bg: var(--dark-card-bg);
+  --text: var(--dark-text);
+  --text-light: var(--dark-text-light);
+  --text-lighter: var(--dark-text-lighter);
+  --border: var(--dark-border);
+  
+  /* Dark Theme Specific Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth Theme Transition */
+* {
+  transition: background-color var(--transition-normal), 
+              color var(--transition-normal), 
+              border-color var(--transition-normal),
+              box-shadow var(--transition-normal);
+}

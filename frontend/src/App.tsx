@@ -1,312 +1,258 @@
-import { useState, useRef } from 'react'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import { ThemeProvider } from './theme/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
+import SearchBar from './components/SearchBar';
+import Card from './components/Card';
+import Button from './components/Button';
+import Icon from './components/Icon';
+import type { IconType } from './components/Icon';
+import './theme/theme.css';
 
 // Define app types
-interface AppCategory {
+interface App {
   id: string;
   name: string;
-  icon: string;
+  description: string;
+  category: 'browser' | 'productivity' | 'gaming' | 'media' | 'social' | 'system';
+  icon: IconType;
+  scripts: OptimizationScript[];
 }
 
 interface OptimizationScript {
   id: string;
   name: string;
   description: string;
-  recommended: boolean;
+  type: 'debloat' | 'performance' | 'privacy';
 }
 
-interface App {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  category: string;
-  scripts: OptimizationScript[];
-  popularity: number; // 1-10 rating
-}
-
-// Sample data for apps
-const appCategories: AppCategory[] = [
-  { id: 'browsers', name: 'Web Browsers', icon: '🌐' },
-  { id: 'productivity', name: 'Productivity', icon: '📊' },
-  { id: 'gaming', name: 'Gaming', icon: '🎮' },
-  { id: 'media', name: 'Media & Entertainment', icon: '🎬' },
-  { id: 'social', name: 'Social & Communication', icon: '💬' },
-  { id: 'system', name: 'System Utilities', icon: '⚙️' },
-];
-
-const sampleApps: App[] = [
+// Mock data for apps
+const mockApps: App[] = [
   {
     id: 'chrome',
     name: 'Google Chrome',
-    icon: '🌐',
-    description: 'Popular web browser with extensive features',
-    category: 'browsers',
-    popularity: 9,
+    description: 'Popular web browser with extensive extension support',
+    category: 'browser',
+    icon: 'browser',
     scripts: [
       {
-        id: 'chrome-memory',
-        name: 'Memory Optimization',
-        description: 'Reduce Chrome\'s memory footprint by disabling unused features',
-        recommended: true
+        id: 'chrome-debloat',
+        name: 'Debloat Chrome',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
       },
       {
-        id: 'chrome-startup',
-        name: 'Startup Boost',
-        description: 'Optimize Chrome\'s startup time by removing unnecessary extensions',
-        recommended: true
+        id: 'chrome-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
       },
       {
         id: 'chrome-privacy',
-        name: 'Privacy Enhancement',
+        name: 'Enhance Privacy',
         description: 'Disable tracking and telemetry features',
-        recommended: false
+        type: 'privacy'
       }
     ]
   },
   {
     id: 'firefox',
     name: 'Mozilla Firefox',
-    icon: '🦊',
-    description: 'Privacy-focused web browser',
-    category: 'browsers',
-    popularity: 8,
+    description: 'Privacy-focused web browser with customization options',
+    category: 'browser',
+    icon: 'browser',
     scripts: [
       {
-        id: 'firefox-memory',
-        name: 'Memory Optimization',
-        description: 'Reduce Firefox\'s memory usage',
-        recommended: true
+        id: 'firefox-debloat',
+        name: 'Debloat Firefox',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
       },
       {
-        id: 'firefox-privacy',
-        name: 'Privacy Hardening',
-        description: 'Enhance Firefox\'s privacy features',
-        recommended: true
+        id: 'firefox-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
       }
     ]
   },
   {
     id: 'vscode',
     name: 'Visual Studio Code',
-    icon: '📝',
     description: 'Lightweight code editor with extensive plugin support',
     category: 'productivity',
-    popularity: 10,
+    icon: 'productivity',
     scripts: [
       {
-        id: 'vscode-startup',
-        name: 'Startup Optimization',
-        description: 'Improve VSCode startup time',
-        recommended: true
+        id: 'vscode-debloat',
+        name: 'Debloat VS Code',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
       },
       {
-        id: 'vscode-extensions',
-        name: 'Extension Management',
-        description: 'Optimize extension loading and usage',
-        recommended: false
+        id: 'vscode-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
       }
     ]
   },
   {
     id: 'steam',
     name: 'Steam',
-    icon: '🎮',
-    description: 'Popular gaming platform and store',
+    description: 'Digital distribution platform for PC gaming',
     category: 'gaming',
-    popularity: 9,
+    icon: 'gaming',
     scripts: [
       {
-        id: 'steam-cleanup',
-        name: 'Cache Cleanup',
-        description: 'Remove unnecessary cache files and downloads',
-        recommended: true
+        id: 'steam-debloat',
+        name: 'Debloat Steam',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
       },
       {
-        id: 'steam-startup',
-        name: 'Disable Auto-start',
-        description: 'Prevent Steam from starting with Windows',
-        recommended: false
+        id: 'steam-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
       }
     ]
   },
   {
     id: 'spotify',
     name: 'Spotify',
-    icon: '🎵',
-    description: 'Music streaming service',
+    description: 'Music streaming service with a vast library',
     category: 'media',
-    popularity: 8,
+    icon: 'media',
     scripts: [
       {
-        id: 'spotify-cache',
-        name: 'Cache Management',
-        description: 'Optimize Spotify\'s cache usage',
-        recommended: true
+        id: 'spotify-debloat',
+        name: 'Debloat Spotify',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
       },
       {
-        id: 'spotify-startup',
-        name: 'Startup Optimization',
-        description: 'Improve Spotify\'s launch time',
-        recommended: false
+        id: 'spotify-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
       }
     ]
   },
   {
     id: 'discord',
     name: 'Discord',
-    icon: '💬',
-    description: 'Voice, video and text communication platform',
+    description: 'Voice, video and text communication service',
     category: 'social',
-    popularity: 9,
+    icon: 'social',
     scripts: [
       {
-        id: 'discord-memory',
-        name: 'Memory Usage Reduction',
-        description: 'Reduce Discord\'s memory footprint',
-        recommended: true
+        id: 'discord-debloat',
+        name: 'Debloat Discord',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
       },
       {
-        id: 'discord-startup',
-        name: 'Disable Auto-start',
-        description: 'Prevent Discord from starting with Windows',
-        recommended: false
+        id: 'discord-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
+      },
+      {
+        id: 'discord-privacy',
+        name: 'Enhance Privacy',
+        description: 'Disable tracking and telemetry features',
+        type: 'privacy'
       }
     ]
   },
   {
     id: 'windows',
-    name: 'Windows System',
-    icon: '⊞',
-    description: 'Core Windows system optimization',
+    name: 'Windows',
+    description: 'Operating system with system-wide optimizations',
     category: 'system',
-    popularity: 10,
+    icon: 'system',
     scripts: [
       {
         id: 'windows-debloat',
-        name: 'Windows Debloater',
-        description: 'Remove unnecessary Windows components and services',
-        recommended: true
+        name: 'Debloat Windows',
+        description: 'Remove unnecessary components and features',
+        type: 'debloat'
+      },
+      {
+        id: 'windows-performance',
+        name: 'Optimize Performance',
+        description: 'Improve startup time and resource usage',
+        type: 'performance'
       },
       {
         id: 'windows-privacy',
-        name: 'Privacy Enhancement',
-        description: 'Disable telemetry and data collection',
-        recommended: true
-      },
-      {
-        id: 'windows-startup',
-        name: 'Startup Optimization',
-        description: 'Improve Windows boot time',
-        recommended: true
-      }
-    ]
-  },
-  {
-    id: 'adobe',
-    name: 'Adobe Creative Cloud',
-    icon: '🎨',
-    description: 'Suite of creative applications',
-    category: 'productivity',
-    popularity: 7,
-    scripts: [
-      {
-        id: 'adobe-services',
-        name: 'Background Services',
-        description: 'Disable unnecessary Adobe background services',
-        recommended: true
-      },
-      {
-        id: 'adobe-cleanup',
-        name: 'Cache Cleanup',
-        description: 'Clean up Adobe cache files',
-        recommended: false
+        name: 'Enhance Privacy',
+        description: 'Disable tracking and telemetry features',
+        type: 'privacy'
       }
     ]
   }
 ];
 
-function App() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+const AppContent: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedApp, setSelectedApp] = useState<App | null>(null);
   const [selectedScripts, setSelectedScripts] = useState<string[]>([]);
-  const [optimizationResult, setOptimizationResult] = useState<any>(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  
-  const appListRef = useRef<HTMLDivElement>(null);
-  const resultRef = useRef<HTMLDivElement>(null);
+  const [optimizationComplete, setOptimizationComplete] = useState(false);
+  const [filteredApps, setFilteredApps] = useState<App[]>(mockApps);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  // Filter apps based on search and category
-  const filteredApps = sampleApps.filter(app => {
-    const matchesSearch = app.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          app.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory ? app.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
-  });
+  // Filter apps based on search query and category
+  useEffect(() => {
+    let filtered = mockApps;
+    
+    if (searchQuery) {
+      filtered = filtered.filter((app: App) => 
+        app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    if (activeCategory && activeCategory !== 'all') {
+      filtered = filtered.filter((app: App) => app.category === activeCategory);
+    }
+    
+    setFilteredApps(filtered);
+  }, [searchQuery, activeCategory]);
 
   // Handle app selection
   const handleAppSelect = (app: App) => {
     setSelectedApp(app);
-    // Pre-select recommended scripts
-    setSelectedScripts(app.scripts.filter(script => script.recommended).map(script => script.id));
-    
-    // Scroll to app details
-    setTimeout(() => {
-      if (appListRef.current) {
-        appListRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    setSelectedScripts([]);
+    setOptimizationComplete(false);
   };
 
-  // Handle script selection toggle
-  const toggleScript = (scriptId: string) => {
-    setSelectedScripts(prev => 
-      prev.includes(scriptId) 
-        ? prev.filter(id => id !== scriptId) 
-        : [...prev, scriptId]
-    );
+  // Handle script selection
+  const handleScriptSelect = (scriptId: string) => {
+    setSelectedScripts(prev => {
+      if (prev.includes(scriptId)) {
+        return prev.filter(id => id !== scriptId);
+      } else {
+        return [...prev, scriptId];
+      }
+    });
   };
 
   // Handle optimization
-  const runOptimization = async () => {
+  const handleOptimize = async () => {
     if (!selectedApp || selectedScripts.length === 0) return;
     
     setIsOptimizing(true);
-    setOptimizationResult(null);
     
+    // Simulate API call
     try {
-      const response = await fetch('http://localhost:8000/api/optimize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          appId: selectedApp.id,
-          scripts: selectedScripts,
-        }),
-      });
-      
-      const data = await response.json();
-      setOptimizationResult(data);
-      
-      // Show success message with animation
-      setShowSuccessMessage(true);
-      setTimeout(() => setShowSuccessMessage(false), 5000);
-      
-      // Scroll to results
-      setTimeout(() => {
-        if (resultRef.current) {
-          resultRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
+      // In a real app, this would be an API call to the backend
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setOptimizationComplete(true);
     } catch (error) {
-      console.error('Error optimizing app:', error);
-      setOptimizationResult({ 
-        success: false, 
-        error: 'Failed to connect to optimization service' 
-      });
+      console.error('Optimization failed:', error);
     } finally {
       setIsOptimizing(false);
     }
@@ -316,221 +262,140 @@ function App() {
   const handleReset = () => {
     setSelectedApp(null);
     setSelectedScripts([]);
-    setOptimizationResult(null);
-    setShowSuccessMessage(false);
+    setOptimizationComplete(false);
   };
 
+  // Get all unique categories
+  const categories = ['all', ...Array.from(new Set(mockApps.map((app: App) => app.category)))];
+
   return (
-    <div className="app-container">
-      {/* Header */}
+    <div className="app">
       <header className="app-header">
-        <div className="logo-container">
-          <div className="logo">⚡</div>
+        <div className="app-logo">
+          <Icon type="lightning" size={32} />
           <h1>Acceleron</h1>
         </div>
-        <p className="tagline">Optimize and debloat your applications</p>
+        <div className="app-actions">
+          <ThemeToggle />
+        </div>
       </header>
-
-      {/* Main Content */}
-      <main className="main-content">
-        {/* Search and Filter Section */}
-        <section className="search-section">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search applications..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <span className="search-icon">🔍</span>
-          </div>
-          
-          <div className="categories">
-            <button 
-              className={`category-button ${selectedCategory === null ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(null)}
-            >
-              All
-            </button>
-            {appCategories.map(category => (
-              <button
-                key={category.id}
-                className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                <span className="category-icon">{category.icon}</span>
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* App List */}
-        <section className="apps-section">
-          <h2>Applications {searchTerm && `matching "${searchTerm}"`}</h2>
-          
-          {filteredApps.length === 0 ? (
-            <div className="no-results">
-              <p>No applications found matching your criteria</p>
-              <button className="reset-button" onClick={() => {
-                setSearchTerm('');
-                setSelectedCategory(null);
-              }}>
-                Reset Filters
-              </button>
-            </div>
-          ) : (
-            <div className="app-grid">
-              {filteredApps.map(app => (
-                <div 
-                  key={app.id} 
-                  className={`app-card ${selectedApp?.id === app.id ? 'selected' : ''}`}
-                  onClick={() => handleAppSelect(app)}
-                >
-                  <div className="app-icon">{app.icon}</div>
-                  <div className="app-info">
-                    <h3>{app.name}</h3>
-                    <p>{app.description}</p>
-                    <div className="app-meta">
-                      <span className="app-category">
-                        {appCategories.find(c => c.id === app.category)?.name}
-                      </span>
-                      <span className="app-popularity">
-                        {'★'.repeat(Math.floor(app.popularity / 2))}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* App Details and Optimization */}
-        {selectedApp && (
-          <section className="app-details" ref={appListRef}>
-            <div className="app-header">
-              <div className="app-title">
-                <div className="app-icon large">{selectedApp.icon}</div>
-                <h2>{selectedApp.name}</h2>
-              </div>
-              <button className="back-button" onClick={handleReset}>
-                ← Back to List
-              </button>
-            </div>
-
-            <div className="optimization-options">
-              <h3>Available Optimization Scripts</h3>
-              <p className="help-text">
-                Select the optimization scripts you want to run. Recommended scripts are pre-selected.
+      
+      <main className="app-main">
+        {!selectedApp ? (
+          <>
+            <section className="app-hero">
+              <h2 className="app-title">Optimize Your Applications</h2>
+              <p className="app-subtitle">
+                Select an application to optimize its performance and remove unnecessary components.
               </p>
-              
-              <div className="scripts-list">
-                {selectedApp.scripts.map(script => (
-                  <div key={script.id} className="script-item">
-                    <label className="script-label">
-                      <input
-                        type="checkbox"
-                        checked={selectedScripts.includes(script.id)}
-                        onChange={() => toggleScript(script.id)}
-                      />
-                      <div className="script-info">
-                        <span className="script-name">
-                          {script.name}
-                          {script.recommended && <span className="recommended-badge">Recommended</span>}
-                        </span>
-                        <span className="script-description">{script.description}</span>
-                      </div>
-                    </label>
-                  </div>
+              <SearchBar 
+                placeholder="Search applications..." 
+                onSearch={setSearchQuery}
+                autoFocus
+              />
+            </section>
+            
+            <section className="app-categories">
+              <div className="category-filters">
+                {categories.map((category: string) => (
+                  <Button 
+                    key={category}
+                    variant={activeCategory === category ? 'primary' : 'outline'}
+                    size="small"
+                    onClick={() => setActiveCategory(category)}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </Button>
                 ))}
               </div>
-              
-              <div className="action-buttons">
-                <button 
-                  className="optimize-button"
-                  disabled={isOptimizing || selectedScripts.length === 0}
-                  onClick={runOptimization}
-                >
-                  {isOptimizing ? (
-                    <>
-                      <span className="spinner"></span>
-                      Optimizing...
-                    </>
-                  ) : (
-                    <>Optimize {selectedApp.name}</>
-                  )}
-                </button>
-                <button 
-                  className="select-all-button"
-                  onClick={() => setSelectedScripts(selectedApp.scripts.map(s => s.id))}
-                >
-                  Select All
-                </button>
-                <button 
-                  className="clear-button"
-                  onClick={() => setSelectedScripts([])}
-                >
-                  Clear All
-                </button>
+            </section>
+            
+            <section className="app-grid">
+              {filteredApps.length > 0 ? (
+                <div className="card-grid">
+                  {filteredApps.map((app: App) => (
+                    <Card
+                      key={app.id}
+                      title={app.name}
+                      description={app.description}
+                      icon={app.icon}
+                      onClick={() => handleAppSelect(app)}
+                      className="card-animate-in"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="no-results">
+                  <Icon type="error" size={48} />
+                  <p>No applications found matching your search criteria.</p>
+                </div>
+              )}
+            </section>
+          </>
+        ) : (
+          <section className="app-detail">
+            <div className="app-detail-header">
+              <Button 
+                variant="text" 
+                icon="browser" 
+                onClick={handleReset}
+              >
+                Back to Applications
+              </Button>
+              <h2>{selectedApp.name}</h2>
+              <p>{selectedApp.description}</p>
+            </div>
+            
+            <div className="app-scripts">
+              <h3>Available Optimization Scripts</h3>
+              <div className="script-list">
+                {selectedApp.scripts.map(script => (
+                  <Card
+                    key={script.id}
+                    title={script.name}
+                    description={script.description}
+                    selected={selectedScripts.includes(script.id)}
+                    onClick={() => handleScriptSelect(script.id)}
+                  />
+                ))}
               </div>
             </div>
-
-            {/* Optimization Results */}
-            {optimizationResult && (
-              <div className="optimization-results" ref={resultRef}>
-                <h3>Optimization Results</h3>
-                
-                {optimizationResult.success ? (
-                  <div className="success-result">
-                    <div className="result-icon">✅</div>
-                    <div className="result-details">
-                      <h4>Successfully Optimized {selectedApp.name}</h4>
-                      <ul className="improvements-list">
-                        {optimizationResult.improvements?.map((improvement: string, index: number) => (
-                          <li key={index}>{improvement}</li>
-                        ))}
-                      </ul>
-                      <div className="stats-grid">
-                        {optimizationResult.stats && Object.entries(optimizationResult.stats).map(([key, value]: [string, any]) => (
-                          <div className="stat-item" key={key}>
-                            <span className="stat-label">{key}</span>
-                            <span className="stat-value">{value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="error-result">
-                    <div className="result-icon">❌</div>
-                    <div className="result-details">
-                      <h4>Optimization Failed</h4>
-                      <p>{optimizationResult.error || 'An unknown error occurred'}</p>
-                    </div>
-                  </div>
-                )}
+            
+            <div className="app-actions-container">
+              <Button 
+                variant="primary" 
+                icon="lightning"
+                disabled={selectedScripts.length === 0 || isOptimizing}
+                onClick={handleOptimize}
+              >
+                {isOptimizing ? 'Optimizing...' : 'Run Optimization'}
+              </Button>
+            </div>
+            
+            {optimizationComplete && (
+              <div className="optimization-result">
+                <Icon type="check" size={32} />
+                <h3>Optimization Complete!</h3>
+                <p>All selected optimizations have been applied successfully.</p>
               </div>
             )}
           </section>
         )}
       </main>
-
-      {/* Success Message Overlay */}
-      <div className={`success-message ${showSuccessMessage ? 'show' : ''}`}>
-        <div className="success-content">
-          <span className="success-icon">✅</span>
-          <span>Optimization completed successfully!</span>
-        </div>
-      </div>
-
-      {/* Footer */}
+      
       <footer className="app-footer">
-        <p>Acceleron &copy; {new Date().getFullYear()} - App Optimization Tool</p>
+        <p>&copy; {new Date().getFullYear()} Acceleron. All rights reserved.</p>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default App
+const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+};
+
+export default App;
