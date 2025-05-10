@@ -1,0 +1,96 @@
+.titlebar {
+  height: 38px;
+  background: var(--card-bg);
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  -webkit-app-region: drag;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.titlebar-controls {
+  display: flex;
+  gap: 8px;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.titlebar-button.close {
+  background-color: #ff5f57;
+}
+
+.titlebar-button.minimize {
+  background-color: #ffbd2e;
+}
+
+.titlebar-button.maximize {
+  background-color: #28c940;
+}
+
+.titlebar-button:hover {
+  filter: brightness(0.9);
+}
+
+.titlebar-button.close:hover::after {
+  content: "×";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.titlebar-button.minimize:hover::after {
+  content: "−";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  font-size: 10px;
+  line-height: 11px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.titlebar-button.maximize:hover::after {
+  content: "+";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.titlebar-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin: 0 auto;
+}
+
+.titlebar-spacer {
+  width: 60px;
+}

@@ -7,6 +7,7 @@ import Card from './components/Card';
 import Button from './components/Button';
 import Icon from './components/Icon';
 import type { IconType } from './components/Icon';
+import TitleBar from './components/TitleBar';
 import './theme/theme.css';
 
 // Define app types
@@ -203,6 +204,7 @@ const AppContent: React.FC = () => {
   const [optimizationComplete, setOptimizationComplete] = useState(false);
   const [filteredApps, setFilteredApps] = useState<App[]>(mockApps);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   // Filter apps based on search query and category
   useEffect(() => {
@@ -270,122 +272,133 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <div className="app-logo">
-          <Icon type="lightning" size={32} />
-          <h1>Acceleron</h1>
-        </div>
-        <div className="app-actions">
-          <ThemeToggle />
-        </div>
-      </header>
-      
-      <main className="app-main">
-        {!selectedApp ? (
-          <>
-            <section className="app-hero">
-              <h2 className="app-title">Optimize Your Applications</h2>
-              <p className="app-subtitle">
-                Select an application to optimize its performance and remove unnecessary components.
-              </p>
-              <SearchBar 
-                placeholder="Search applications..." 
-                onSearch={setSearchQuery}
-                autoFocus
-              />
-            </section>
-            
-            <section className="app-categories">
-              <div className="category-filters">
-                {categories.map((category: string) => (
-                  <Button 
-                    key={category}
-                    variant={activeCategory === category ? 'primary' : 'outline'}
-                    size="small"
-                    onClick={() => setActiveCategory(category)}
-                  >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </Button>
-                ))}
+      <TitleBar />
+      <div className="app-content">
+        <header className="app-header">
+          <div className="app-logo">
+            <Icon type="lightning" size={32} />
+            <h1>Acceleron</h1>
+          </div>
+          <div className="app-actions">
+            <Button 
+              variant="outline" 
+              icon="cog"
+              onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+            >
+              Advanced
+            </Button>
+            <ThemeToggle />
+          </div>
+        </header>
+        
+        <main className="app-main">
+          {!selectedApp ? (
+            <>
+              <section className="app-hero">
+                <h2 className="app-title">Optimize Your Applications</h2>
+                <p className="app-subtitle">
+                  Select an application to optimize its performance and remove unnecessary components.
+                </p>
+                <SearchBar 
+                  placeholder="Search applications..." 
+                  onSearch={setSearchQuery}
+                  autoFocus
+                />
+              </section>
+              
+              <section className="app-categories">
+                <div className="category-filters">
+                  {categories.map((category: string) => (
+                    <Button 
+                      key={category}
+                      variant={activeCategory === category ? 'primary' : 'outline'}
+                      size="small"
+                      onClick={() => setActiveCategory(category)}
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </section>
+              
+              <section className="app-grid">
+                {filteredApps.length > 0 ? (
+                  <div className="card-grid">
+                    {filteredApps.map((app: App) => (
+                      <Card
+                        key={app.id}
+                        title={app.name}
+                        description={app.description}
+                        icon={app.icon}
+                        onClick={() => handleAppSelect(app)}
+                        className="card-animate-in"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="no-results">
+                    <Icon type="error" size={48} />
+                    <p>No applications found matching your search criteria.</p>
+                  </div>
+                )}
+              </section>
+            </>
+          ) : (
+            <section className="app-detail">
+              <div className="app-detail-header">
+                <Button 
+                  variant="text" 
+                  icon="browser" 
+                  onClick={handleReset}
+                >
+                  Back to Applications
+                </Button>
+                <h2>{selectedApp.name}</h2>
+                <p>{selectedApp.description}</p>
               </div>
-            </section>
-            
-            <section className="app-grid">
-              {filteredApps.length > 0 ? (
-                <div className="card-grid">
-                  {filteredApps.map((app: App) => (
+              
+              <div className="app-scripts">
+                <h3>Available Optimization Scripts</h3>
+                <div className="script-list">
+                  {selectedApp.scripts.map(script => (
                     <Card
-                      key={app.id}
-                      title={app.name}
-                      description={app.description}
-                      icon={app.icon}
-                      onClick={() => handleAppSelect(app)}
-                      className="card-animate-in"
+                      key={script.id}
+                      title={script.name}
+                      description={script.description}
+                      selected={selectedScripts.includes(script.id)}
+                      onClick={() => handleScriptSelect(script.id)}
                     />
                   ))}
                 </div>
-              ) : (
-                <div className="no-results">
-                  <Icon type="error" size={48} />
-                  <p>No applications found matching your search criteria.</p>
+              </div>
+              
+              <div className="app-actions-container">
+                <Button 
+                  variant="primary" 
+                  icon="lightning"
+                  disabled={selectedScripts.length === 0 || isOptimizing}
+                  onClick={handleOptimize}
+                >
+                  {isOptimizing ? 'Optimizing...' : 'Run Optimization'}
+                </Button>
+              </div>
+              
+              {optimizationComplete && (
+                <div className="optimization-result">
+                  <Icon type="check" size={32} />
+                  <h3>Optimization Complete!</h3>
+                  <p>All selected optimizations have been applied successfully.</p>
                 </div>
               )}
             </section>
-          </>
-        ) : (
-          <section className="app-detail">
-            <div className="app-detail-header">
-              <Button 
-                variant="text" 
-                icon="browser" 
-                onClick={handleReset}
-              >
-                Back to Applications
-              </Button>
-              <h2>{selectedApp.name}</h2>
-              <p>{selectedApp.description}</p>
-            </div>
-            
-            <div className="app-scripts">
-              <h3>Available Optimization Scripts</h3>
-              <div className="script-list">
-                {selectedApp.scripts.map(script => (
-                  <Card
-                    key={script.id}
-                    title={script.name}
-                    description={script.description}
-                    selected={selectedScripts.includes(script.id)}
-                    onClick={() => handleScriptSelect(script.id)}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            <div className="app-actions-container">
-              <Button 
-                variant="primary" 
-                icon="lightning"
-                disabled={selectedScripts.length === 0 || isOptimizing}
-                onClick={handleOptimize}
-              >
-                {isOptimizing ? 'Optimizing...' : 'Run Optimization'}
-              </Button>
-            </div>
-            
-            {optimizationComplete && (
-              <div className="optimization-result">
-                <Icon type="check" size={32} />
-                <h3>Optimization Complete!</h3>
-                <p>All selected optimizations have been applied successfully.</p>
-              </div>
-            )}
-          </section>
-        )}
-      </main>
-      
-      <footer className="app-footer">
-        <p>&copy; {new Date().getFullYear()} Acceleron. All rights reserved.</p>
-      </footer>
+          )}
+        </main>
+        
+        <footer className="app-footer">
+          <p>&copy; {new Date().getFullYear()} Acceleron. All rights reserved.</p>
+          <p className="disclaimer">By using this software, you acknowledge that any changes made to your system are at your own risk.</p>
+        </footer>
+      </div>
     </div>
   );
 };

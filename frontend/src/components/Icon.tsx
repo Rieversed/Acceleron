@@ -11,6 +11,7 @@ import gamingIcon from '../assets/icons/gaming.svg';
 import mediaIcon from '../assets/icons/media.svg';
 import socialIcon from '../assets/icons/social.svg';
 import systemIcon from '../assets/icons/system.svg';
+import cogIcon from '../assets/icons/cog.svg';
 
 // Define icon types
 export type IconType = 
@@ -23,7 +24,8 @@ export type IconType =
   | 'gaming'
   | 'media'
   | 'social'
-  | 'system';
+  | 'system'
+  | 'cog';
 
 interface IconProps {
   type: IconType;
@@ -66,6 +68,8 @@ const Icon: React.FC<IconProps> = ({
         return <img src={socialIcon} style={iconStyle} className={className} alt="Social" />;
       case 'system':
         return <img src={systemIcon} style={iconStyle} className={className} alt="System" />;
+      case 'cog':
+        return <img src={cogIcon} style={iconStyle} className={className} alt="Settings" />;
       default:
         return null;
     }
